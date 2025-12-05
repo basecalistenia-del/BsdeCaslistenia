@@ -34,8 +34,23 @@ export const generateMonthlyPlan = async (user: UserProfile): Promise<MonthlyPla
 
   // Mapa de Vídeos Específicos (Chave: "Semana-Dia")
   const specificVideos: Record<string, string> = {
-    // SEMANA 1 (Já configurado anteriormente)
+    // SEMANA 1
     "1-1": "https://drive.google.com/file/d/1cT7Du11Re9jsEtzRn3p4PzpykBH_roEw/view?usp=drive_link",
+    "1-2": "https://drive.google.com/file/d/1Z_jlwcJi1uQfcrSaSNyECrsIs8KCACSP/view?usp=drive_link",
+    "1-3": "https://drive.google.com/file/d/1a_Op29nzzwRlkXgq1c4BcYzMQ_TcwdP9/view?usp=drive_link",
+    "1-4": "https://drive.google.com/file/d/1F3EmxfJmOg7h1WUBvSSsWrbgnM7QQm8u/view?usp=drive_link",
+    "1-5": "https://drive.google.com/file/d/1N2gD6xcQKgD3RrR1xA_7YQCWxmhVmzPB/view?usp=drive_link",
+    "1-6": "https://drive.google.com/file/d/1beY_s2WcKeFOv-QN0pCKMxABUgcOrLT4/view?usp=drive_link",
+    "1-7": "https://drive.google.com/file/d/1hxBGALtKBxiEkcw_PAyOhoTzk7rbsbJC/view?usp=drive_link",
+
+    // SEMANA 2
+    "2-1": "https://drive.google.com/file/d/1G_XXZFmDuKvQLW46YQF_d9_fTKqiobCo/view?usp=drive_link",
+    "2-2": "https://drive.google.com/file/d/1yx5rzytuIcYVs5sn_DTP6GJpZ_foePFQ/view?usp=drive_link",
+    "2-3": "https://drive.google.com/file/d/1Lp5w465FrOns0QTC-TroCYq7jgvWkeGg/view?usp=drive_link",
+    "2-4": "https://drive.google.com/file/d/1QBnui8m5-oVZeFdelHfEjRABJqaqhnlV/view?usp=drive_link",
+    "2-5": "https://drive.google.com/file/d/10HX2xNJqphYrkBBvjPEuwGwMWpX9xbEO/view?usp=drive_link",
+    "2-6": "https://drive.google.com/file/d/1j5nW_POujF0aqWHay-APv3rw4RJYpY9N/view?usp=drive_link",
+    "2-7": "https://drive.google.com/file/d/1uUnQDwrBgVIc05cyIBflRJI2wikYZh5i/view?usp=drive_link",
 
     // SEMANA 3
     "3-1": "https://drive.google.com/file/d/1WIuUxGROKROMNiDZxEYB4KNaf06Ue9xV/view?usp=drive_link",
@@ -56,55 +71,56 @@ export const generateMonthlyPlan = async (user: UserProfile): Promise<MonthlyPla
     "4-7": "https://drive.google.com/file/d/1GJ4GS-pZDN0ACgSEQjbcV-IwrXZ9WR2z/view?usp=drive_link"
   };
 
-  const weeks: WeekPlan[] = weekFocuses.map((focus, index) => {
-    const weekNum = index + 1;
-    
-    // Gerar 7 dias para a semana
-    const days: DaySession[] = Array.from({ length: 7 }).map((_, dIndex) => {
-      const dayNum = dIndex + 1;
-      let title = `Dia ${dayNum} - Treino Completo`;
-      let desc = "Siga as instruções do vídeo para completar o treino de hoje.";
-      let query = `treino em casa ${user.goal.toLowerCase()} dia ${dayNum}`;
+  const planWeeks: WeekPlan[] = [];
 
-      // Variações simples baseadas no dia
-      if (dayNum === 1) { title = `Dia 1 - Full Body (${baseTerm})`; desc = "Trabalho do corpo todo para iniciar a semana."; }
-      if (dayNum === 2) { title = `Dia 2 - Superiores & Core`; desc = "Foco em força de braços, peito e abdômen."; query += " superiores"; }
-      if (dayNum === 3) { title = `Dia 3 - Cardio & Pernas`; desc = "Aumentando a frequência cardíaca e fortalecendo a base."; query += " pernas cardio"; }
-      if (dayNum === 4) { title = `Dia 4 - Descanso Ativo / Alongamento`; desc = "Recuperação muscular e flexibilidade."; query = "alongamento corpo todo 20 min"; }
-      if (dayNum === 5) { title = `Dia 5 - ${baseTerm} Intenso`; desc = "O treino mais difícil da semana."; query += " avançado intenso"; }
-      if (dayNum === 6) { title = `Dia 6 - Desafio Calistenia`; desc = "Use o peso do corpo para superar limites."; query = "treino calistenia iniciante em casa"; }
-      if (dayNum === 7) { title = `Dia 7 - Descanso Total`; desc = "Dia livre para recuperação completa."; query = ""; }
+  for (let w = 1; w <= 4; w++) {
+    const days: DaySession[] = [];
+    for (let d = 1; d <= 7; d++) {
+      
+      // Default / Placeholder titles if needed
+      let title = `Treino ${baseTerm} - Dia ${d}`;
+      let description = `Foco total em ${baseTerm}. Siga o vídeo e respeite seu ritmo.`;
+      
+      // Customize titles slightly based on day index (static logic)
+      if (d === 1) title = `Full Body (${baseTerm})`;
+      if (d === 2) title = `Membros Inferiores`;
+      if (d === 3) title = `Cardio & Core`;
+      if (d === 4) title = `Membros Superiores`;
+      if (d === 5) title = `Full Body Intenso`;
+      if (d === 6) title = `Desafio Calistênico`;
+      if (d === 7) title = `Mobilidade & Alongamento`;
 
-      // Lógica de URL: Tenta buscar no mapa específico, senão gera busca automática
-      const specificKey = `${weekNum}-${dayNum}`;
-      let videoUrl = specificVideos[specificKey];
-
-      if (!videoUrl) {
-          videoUrl = query ? `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}` : "";
+      // Check for specific video override
+      const specificKey = `${w}-${d}`;
+      let videoUrl = ""; // Default empty
+      
+      if (specificVideos[specificKey]) {
+        videoUrl = specificVideos[specificKey];
       }
 
-      return {
-        dayNumber: dayNum,
+      days.push({
+        dayNumber: d,
         title,
-        description: desc,
-        videoUrl: videoUrl,
+        description,
+        videoUrl,
         completed: false
-      };
+      });
+    }
+
+    planWeeks.push({
+      weekNumber: w,
+      focus: weekFocuses[w - 1],
+      days
     });
+  }
 
-    return {
-      weekNumber: weekNum,
-      focus: focus,
-      days: days
-    };
-  });
-
-  // Retorna o plano montado
-  return {
-    id: `static-${Date.now()}`,
-    title: `Protocolo ${user.goal}`,
-    description: "Programa de 4 semanas focado em resultados rápidos.",
+  const newPlan: MonthlyPlan = {
+    id: Date.now().toString(),
+    title: `Protocolo BaseCalistenia - ${user.goal}`,
+    description: "4 semanas de transformação com peso do corpo.",
     createdAt: Date.now(),
-    weeks: weeks
+    weeks: planWeeks
   };
+
+  return newPlan;
 };

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { UserProfile, AppView, MonthlyPlan, WorkoutLog } from './types';
 import { getMotivationalQuote, generateMonthlyPlan } from './services/geminiService';
-import { DumbbellIcon, CheckCircleIcon, PlayIcon, CalendarIcon, FlameIcon, WhatsAppIcon } from './components/Icons';
+import { DumbbellIcon, CheckCircleIcon, PlayIcon, CalendarIcon, FlameIcon, WhatsAppIcon, UploadIcon } from './components/Icons';
 
 // Constants
 const STORAGE_USER_KEY = 'ironpath_user';
@@ -54,7 +54,6 @@ const VideoPlayer = ({ url, title }: { url: string; title: string }) => {
   const getYoutubeEmbedId = (link: string) => {
     if (!link) return null;
     const cleanUrl = link.trim();
-    // Regex robusto para capturar ID de 11 chars
     const match = cleanUrl.match(/^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/|shorts\/)|(?:(?:watch)?\?v(?:i)?=|\&v(?:i)?=))([^#\&\?]*).*/);
     return (match && match[1].length === 11) ? match[1] : null;
   };
@@ -205,18 +204,26 @@ const App = () => {
     const savedUser = localStorage.getItem(STORAGE_USER_KEY);
     const savedPlan = localStorage.getItem(STORAGE_PLAN_KEY);
 
-    if (savedPlan) {
-      setMonthlyPlan(JSON.parse(savedPlan));
+    if (savedPlan && savedPlan !== "undefined") {
+      try {
+        setMonthlyPlan(JSON.parse(savedPlan));
+      } catch (e) {
+        console.error("Failed to parse plan", e);
+      }
     }
 
-    if (savedUser) {
-      const parsedUser: UserProfile = JSON.parse(savedUser);
-      // Ensure history exists for older saved users
-      if (!parsedUser.history) parsedUser.history = [];
-      setUser(parsedUser);
-      // If user exists, go straight to dashboard
-      setView(AppView.DASHBOARD);
-      loadDashboardData();
+    if (savedUser && savedUser !== "undefined") {
+      try {
+        const parsedUser: UserProfile = JSON.parse(savedUser);
+        // Ensure history exists for older saved users
+        if (!parsedUser.history) parsedUser.history = [];
+        setUser(parsedUser);
+        // If user exists, go straight to dashboard
+        setView(AppView.DASHBOARD);
+        loadDashboardData();
+      } catch (e) {
+        console.error("Failed to parse user", e);
+      }
     } else {
       setView(AppView.LANDING);
     }
