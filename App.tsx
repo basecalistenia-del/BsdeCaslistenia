@@ -169,20 +169,6 @@ const VideoPlayer = ({ url, title }: { url: string; title: string }) => {
           />
         )}
       </div>
-
-      {/* Info / Fallback Actions - Simplified Button */}
-      {(hasError || isOneDrive || isGoogleDrive) && (
-        <div className="flex justify-center animate-fade-in">
-          <a 
-            href={url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="bg-primary hover:bg-primaryHover text-black px-8 py-3 rounded-lg font-black uppercase tracking-widest transition-all shadow-lg hover:shadow-primary/20 flex items-center gap-2 text-sm"
-          >
-            ABRIR NO DRIVE <span className="opacity-50">↗</span>
-          </a>
-        </div>
-      )}
     </div>
   );
 };
@@ -236,6 +222,23 @@ const App = () => {
 
   // --- Actions ---
 
+  const handleShareApp = async () => {
+    const url = "https://bsde-caslistenia.vercel.app/";
+    const title = "BaseCalistenia - Treinos em Casa";
+    const text = "Estou treinando com o BaseCalistenia! 4 semanas de treinos gratuitos.";
+
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, text, url });
+      } catch (error) {
+        console.log('Error sharing:', error);
+      }
+    } else {
+      navigator.clipboard.writeText(url);
+      alert("Link copiado para a área de transferência!");
+    }
+  };
+
   const handleStartAnonymous = async (goal: string) => {
     const newUser: UserProfile = {
       username: "Atleta",
@@ -260,7 +263,8 @@ const App = () => {
       if (confirm("Isso apagará seu progresso e atualizará os treinos. Deseja continuar?")) {
           localStorage.removeItem(STORAGE_USER_KEY);
           localStorage.removeItem(STORAGE_PLAN_KEY);
-          window.location.reload();
+          // Hard reload to clear potential cache issues
+          window.location.href = window.location.href;
       }
   };
 
@@ -339,7 +343,13 @@ const App = () => {
 
       {selectedWeekId === null && (
           <header className="bg-black pt-10 pb-6 text-center px-4 animate-fade-in relative">
-            <div className="absolute top-4 right-4 md:right-8">
+            <div className="absolute top-4 right-4 md:right-8 flex gap-2">
+                <button 
+                    onClick={handleShareApp}
+                    className="bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white transition-all px-4 py-2 rounded-full text-xs font-black uppercase flex items-center gap-2"
+                >
+                    <span>📤</span> <span className="hidden md:inline">Compartilhar</span>
+                </button>
                 <button 
                     onClick={() => setView(AppView.DONATION)}
                     className="bg-slate-900 border border-primary/30 text-primary hover:bg-primary hover:text-black transition-all px-4 py-2 rounded-full text-xs font-black uppercase flex items-center gap-2 shadow-lg shadow-primary/10"
@@ -466,7 +476,7 @@ const App = () => {
               {/* Reset Footer */}
               <div className="mt-20 border-t border-slate-800 pt-8 flex flex-col items-center justify-center gap-4 pb-8">
                   <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">
-                      Projeto criado por Khalliu para ajudar pessoas
+                      v3.0 - Projeto criado por Khalliu para ajudar pessoas
                   </p>
                   <button 
                     onClick={handleResetApp}
@@ -498,17 +508,6 @@ const App = () => {
 
                 <div className="max-w-5xl mx-auto mb-10">
                      <VideoPlayer url={currentDay.videoUrl} title={currentDay.title} />
-
-                     {/* INSTABILITY WARNING ALERT */}
-                     <div className="mt-4 bg-yellow-500/10 border border-yellow-500/20 p-4 rounded-lg flex gap-3 animate-fade-in items-center">
-                        <span className="text-xl">⚠️</span>
-                        <div className="text-sm text-slate-300">
-                            <p className="font-bold text-yellow-500 uppercase text-xs mb-1">Aviso de Instabilidade</p>
-                            <p className="text-xs">
-                                Caso o player acima falhe, utilize o botão "ABRIR NO DRIVE" que aparecerá.
-                            </p>
-                        </div>
-                     </div>
 
                     <div className="bg-slate-900 border border-slate-800 rounded-b-xl p-6 flex flex-col items-center gap-6 mt-6">
                         <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest">
@@ -717,6 +716,17 @@ const DonationScreen = ({ onBack }: { onBack: () => void }) => {
                     <p className="text-[10px] text-slate-500 font-mono select-all">
                         Chave: {PIX_KEY}
                     </p>
+
+                    {/* NEW SEND RECEIPT BUTTON IN DONATION SCREEN */}
+                    <a 
+                        href="https://wa.me/5566984375229?text=Ol%C3%A1%2C%20segue%20meu%20comprovante%20de%20doa%C3%A7%C3%A3o%20para%20o%20BaseCalistenia%21"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block w-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold uppercase text-xs py-4 rounded-lg border border-slate-700 hover:border-slate-600 transition-all flex items-center justify-center gap-2"
+                    >
+                        <WhatsAppIcon className="w-4 h-4 text-green-500" />
+                        Enviar Comprovante
+                    </a>
                     
                     <button 
                         onClick={onBack}
