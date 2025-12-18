@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { UserProfile, AppView, MonthlyPlan, WorkoutLog } from './types';
 import { getMotivationalQuote, generateMonthlyPlan } from './services/geminiService';
@@ -7,10 +8,11 @@ import { DumbbellIcon, CheckCircleIcon, PlayIcon, CalendarIcon, FlameIcon, Whats
 const STORAGE_USER_KEY = 'ironpath_user';
 const STORAGE_PLAN_KEY = 'ironpath_monthly_plan';
 const PIX_KEY = "basecalistenia@gmail.com";
+const CONTACT_PHONE = "5566981182564";
 
 const WhatsAppButton = () => (
   <a 
-    href="https://wa.me/5566984375229?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20o%20BaseCalistenia"
+    href={`https://wa.me/${CONTACT_PHONE}?text=Ol%C3%A1%2C%20gostaria%20de%20saber%20mais%20sobre%20o%20BaseCalistenia`}
     target="_blank"
     rel="noopener noreferrer"
     className="fixed bottom-6 right-6 z-50 bg-green-600 hover:bg-green-500 text-white p-4 rounded-full shadow-2xl transition-all hover:scale-110 flex items-center justify-center animate-fade-in border-2 border-green-400/30 group"
@@ -401,7 +403,7 @@ const App = () => {
                           </button>
                           
                           <a 
-                              href="https://wa.me/5566984375229?text=Ol%C3%A1%2C%20segue%20meu%20comprovante%20de%20doa%C3%A7%C3%A3o%20para%20o%20BaseCalistenia%21"
+                              href={`https://wa.me/${CONTACT_PHONE}?text=Ol%C3%A1%2C%20segue%20meu%20comprovante%20de%20doa%C3%A7%C3%A3o%20para%20o%20BaseCalistenia%21`}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold uppercase text-xs py-3 rounded-xl border border-slate-700 hover:border-slate-600 transition-all flex items-center justify-center gap-2"
@@ -719,7 +721,7 @@ const DonationScreen = ({ onBack }: { onBack: () => void }) => {
 
                     {/* NEW SEND RECEIPT BUTTON IN DONATION SCREEN */}
                     <a 
-                        href="https://wa.me/5566984375229?text=Ol%C3%A1%2C%20segue%20meu%20comprovante%20de%20doa%C3%A7%C3%A3o%20para%20o%20BaseCalistenia%21"
+                        href={`https://wa.me/${CONTACT_PHONE}?text=Ol%C3%A1%2C%20segue%20meu%20comprovante%20de%20doa%C3%A7%C3%A3o%20para%20o%20BaseCalistenia%21`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="block w-full bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-bold uppercase text-xs py-4 rounded-lg border border-slate-700 hover:border-slate-600 transition-all flex items-center justify-center gap-2"
